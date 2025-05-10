@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Disease Predictor</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Medicine Disease Predictor</h1>
+        <form id="medicineForm">
+            <label for="medicine_name">Enter Medicine Name:</label>
+            <input type="text" id="medicine_name" name="medicine_name" required>
+            <button type="submit">Submit</button>
+        </form>
+
+        <div id="result">
+            <!-- Result will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#medicineForm').submit(function(event) {
+                event.preventDefault();  // Prevent form submission from refreshing the page
+
+                var medicine_name = $('#medicine_name').val();
+
+                $.ajax({
+                    url: '/',
+                    type: 'POST',
+                    data: {medicine_name: medicine_name},
+                    success: function(response) {
+                        if (response.error) {
+                            $('#result').html('<p>' + response.error + '</p>');
+                        } else {
+                            var details = `<p><strong>Medicine Name:</strong> ${response.name}</p>
+                                           <p><strong>Disease:</strong> ${response.disease}</p>
+                                           <p><strong>Category:</strong> ${response.category}</p>
+                                           <p><strong>Dosage Form:</strong> ${response.dosage_form}</p>
+                                           <p><strong>Strength:</strong> ${response.strength}</p>
+                                           <p><strong>Manufacturer:</strong> ${response.manufacturer}</p>`;
+                            $('#result').html(details);
+                        }
+                    },
+                    error: function() {
+                        $('#result').html('<p>There was an error with the request.</p>');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
